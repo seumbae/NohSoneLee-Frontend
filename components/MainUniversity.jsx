@@ -206,13 +206,13 @@ const MainUniversity = ({ school }) => {
 				<View style={styles.bookmarkContainer}>
 					<Pressable onPress={bookmarkHandler}>
 						{isFollowed=== true ? (
-							<AutoHeightImage
-								width={deviceWidth * 0.04}
+							<Image
+								style={styles.bookmarkImage}
 								source={require("../assets/bookmark_blue.png")}
 							/>
 						) : (
-							<AutoHeightImage
-								width={deviceWidth * 0.04}
+							<Image
+							  style={styles.bookmarkImage}
 								source={require("../assets/bookmark_gray.png")}
 							/>
 						)}
@@ -258,6 +258,10 @@ const styles = StyleSheet.create({
 	},
 	bookmarkContainer: {
 		alignItems: "flex-end",
+	},
+	bookmarkImage:{
+		width: deviceWidth * 0.04,
+		height: 360*0.07,
 	},
 	Mainimage: {
 		width: deviceWidth * 0.2,

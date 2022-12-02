@@ -52,9 +52,18 @@ const ItemImage = ({ school }) => {
 
 const deviceWidth = Dimensions.get("window").width;
 
-const HomeSearchScreen = ({ navigation }) => {
-	const [recentSearchesSchool, setRecentSearchesSchool] = useState([]);
-	const [rank, setRank] = useState([]);
+const FollowingSearchScreen = ({ navigation }) => {
+	const [recentSearches, setRecentSearches] = useState([]);
+	const topic = [
+		{ color: "#B14C86", topic: "동아리" },
+		{ color: "#CC94FF", topic: "공모전" },
+		{ color: "#FFB9DF", topic: "편입" },
+		{ color: "#FFFF95", topic: "학과 학업" },
+		{ color: "#A7C84E", topic: "학생회" },
+		{ color: "#57A8F2", topic: "대외 활동" },
+		{ color: "#FFB355", topic: "장학금" },
+	];
+
 	useLayoutEffect(() => {
 		const onPress = () => {
 			navigation.goBack();
@@ -66,43 +75,24 @@ const HomeSearchScreen = ({ navigation }) => {
 			headerRight: () => <SearchBar autoFocus={true} />,
 		});
 	}, [navigation]);
+
 	useLayoutEffect(() => {
 		const getData = async () => {
-			setRecentSearchesSchool(
-				await AsyncStorage.getItem("recentSearchesSchool")
-			);
+			setRecentSearches(await AsyncStorage.getItem("recentSearches"));
 		};
 		getData();
 	}, []);
 
-	useLayoutEffect(() => {
-		getRank().then((res) => {
-			setRank(res.data.data);
-		});
-	}, []);
-
-	//급상승 순위 조회 school get
-	// {
-	//   "success": true,
-	//   "data": [
-	//       {
-	//           "name": "서울대학교",
-	//           "count": 3
-	//       }
-	//     }
 	return (
 		<ScrollView contentContainerStyle={styles.container}>
 			<View style={styles.recentContainer}>
 				<View style={styles.recentTitle}>
 					<Text style={styles.subTitle}>최근 검색</Text>
 					<Text style={styles.subTitle}>전체 삭제</Text>
-					{recentSearchesSchool?.map((recentSearch) => {
+					{recentSearches?.map((recentSearch) => {
 						return (
 							<View style={styles.searchContainer}>
-								<View style={styles.school}>
-									<ItemImage school={recentSearch} />
-									<Text style={styles.recentSearch}>{recentSearch}</Text>
-								</View>
+								<Text style={styles.recentSearch}>{recentSearch}</Text>
 								<View>
 									<Text style={styles.icon}>X</Text>
 								</View>
@@ -114,14 +104,14 @@ const HomeSearchScreen = ({ navigation }) => {
 			<View style={styles.trendingContainer}>
 				<View style={styles.trendingTitle}>
 					<Text style={styles.subTitle}>인기 토픽</Text>
-					{rank?.map((item) => {
+					{topic?.map((item) => {
 						return (
 							<View style={styles.searchContainer}>
-								<View style={styles.school}>
-									<ItemImage school={item.name} />
-									<View>
-										<Text style={styles.recentSearch}>{item.name}</Text>
-									</View>
+								<View style={styles.topicBody}>
+									<View
+										style={[styles.cirlce, { backgroundColor: item.color }]}
+									/>
+									<Text style={styles.recentSearch}>{item.topic}</Text>
 								</View>
 							</View>
 						);
@@ -132,7 +122,7 @@ const HomeSearchScreen = ({ navigation }) => {
 	);
 };
 
-export default HomeSearchScreen;
+export default FollowingSearchScreen;
 
 const styles = StyleSheet.create({
 	container: {
@@ -152,18 +142,26 @@ const styles = StyleSheet.create({
 	subTitle: {
 		fontSize: 12,
 		color: Colors.font600,
+		marginBottom: 10,
 	},
 	searchContainer: {
 		flexDirection: "row",
 		justifyContent: "space-between",
-    marginVertical: 10,
+		marginVertical: 10,
 	},
-	school: {
+	topicBody: {
 		flexDirection: "row",
-    alignItems: "center",
+		alignItems: "center",
+		marginLeft: 10,
+	},
+	cirlce: {
+		width: 40,
+		height: 40,
+		borderRadius: 20,
 	},
 	recentSearch: {
 		fontSize: 16,
+    marginLeft: 10,
 	},
 	icon: {
 		fontSize: 12,

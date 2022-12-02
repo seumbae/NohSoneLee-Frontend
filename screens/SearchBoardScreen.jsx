@@ -5,7 +5,7 @@ import { Lists } from "../components/BoardList";
 import PreviousButton from "../components/ui/PreviousButton";
 import SearchBar from "../components/ui/SearchBar";
 
-const SearchBoardScreen = ({ navigation ,route }) => {
+const SearchBoardScreen = ({ navigation ,route, autoFocus }) => {
 	const parentText = route.params.text;
 	console.log(parentText);
 	const [list, setList] = useState([]);
@@ -23,7 +23,7 @@ const SearchBoardScreen = ({ navigation ,route }) => {
 			headerTitle: "",
 			headerBackVisible: false,
 			headerLeft: () => <PreviousButton onPress={onPress} />,
-			headerRight: () => <SearchBar autoFocus={true} onUpdateValue={setText} onSubmitEditing={onSubmitEditing} />,
+			headerRight: () => <SearchBar autoFocus={autoFocus} onUpdateValue={setText} onSubmitEditing={onSubmitEditing} />,
 		});
 	}, [navigation]);
 

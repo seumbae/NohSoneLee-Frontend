@@ -7,8 +7,14 @@ import { useLayoutEffect } from "react";
 
 const deviceWidth = Dimensions.get("window").width;
 let src = "";
-let width = 0;
-const SearchBar = ({ value, onUpdateValue, school, autoFocus, onSubmitEditing }) => {
+const SearchBar = ({
+	value,
+	size,
+	onUpdateValue,
+	school,
+	autoFocus,
+	onSubmitEditingHandler,
+}) => {
 	switch (school) {
 		case "세종대학교":
 			src = require("../../assets/school/sejong.png");
@@ -37,29 +43,33 @@ const SearchBar = ({ value, onUpdateValue, school, autoFocus, onSubmitEditing })
 		default:
 			src = "";
 	}
-	// width: src === "" ? deviceWidth* 0.65 : 
+
 	return (
 		<View
 			style={[
 				styles.container,
-				{ width: src === "" ? deviceWidth * 0.65 : deviceWidth * 0.75},
-				{ width: autoFocus ? deviceWidth * 0.75 : deviceWidth * 0.65}
+				{
+					width:
+						size !== undefined
+							? deviceWidth * size
+							: src === ""
+							? deviceWidth * 0.65
+							: deviceWidth * 0.75,
+				},
 			]}
 		>
-			<View
-				style={[
-					styles.input,
-					{ width: src === "" ? deviceWidth * 0.65 : deviceWidth * 0.75 },
-					{ width: autoFocus ? deviceWidth * 0.75 : deviceWidth * 0.65}
-				]}
-			>
+			<View style={[styles.input]}>
 				{src === "" ? null : <Image source={src} style={styles.image} />}
 				<TextInput
 					style={styles.textInput}
-					onChangeText={onUpdateValue}
+					onChangeText={(text) => onUpdateValue(text)}
 					value={value}
 					autoFocus={autoFocus}
-					onSubmitEditing={onSubmitEditing}
+					autoCapitalize="none"
+					spellCheck={false}
+					autoComplete={false}
+					autoCorrect={false}
+					onSubmitEditing={(e) => onSubmitEditingHandler(e)}
 				/>
 			</View>
 			<View style={styles.icon}>
@@ -92,8 +102,6 @@ const styles = StyleSheet.create({
 		backgroundColor: "#FFFFFF",
 		flexDirection: "row",
 	},
-	textInput:{
-
-	},
+	textInput: {},
 	icon: {},
 });

@@ -1,7 +1,5 @@
-import { useNavigation } from "@react-navigation/native";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { tryLogin } from "../services/axios";
-import axios from "axios";
 import {
 	Alert,
 	KeyboardAvoidingView,

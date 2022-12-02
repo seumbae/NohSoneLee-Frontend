@@ -1,5 +1,4 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { createContext, useEffect, useState } from "react";
+import { createContext, useState } from "react";
 
 export const SearchListContext = createContext({
   recentSearchesSchool: [],
@@ -8,10 +7,10 @@ export const SearchListContext = createContext({
 });
 
 const SearchListContextProvider = ({children}) => {
-  const [list, setList] = useState();
+  const [list, setList] = useState([]);
 
   const add = (data) =>{
-    setList((prev) => [data, ...prev]);
+    setList((prev) => [...prev, data]);
   }
   
   const remove = (data) => {
@@ -19,12 +18,12 @@ const SearchListContextProvider = ({children}) => {
   }
 
   const value = {
-    list : list,
+    recentSearchesSchool : list,
     add: add,
     remove : remove,
   }
   
-  return <SearchListContextProvider.Provider value={value}>{children}</SearchListContextProvider.Provider>
+  return <SearchListContext.Provider value={value}>{children}</SearchListContext.Provider>;
 }
 
 export default SearchListContextProvider;

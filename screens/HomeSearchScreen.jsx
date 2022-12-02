@@ -1,5 +1,6 @@
-import { useEffect, useLayoutEffect, useState,useContext } from "react";
+import { useLayoutEffect, useState } from "react";
 import {
+	Alert,
 	View,
 	Text,
 	StyleSheet,
@@ -7,10 +8,9 @@ import {
 	Dimensions,
 	ScrollView,
 } from "react-native";
-import { SearchListContext } from "../store/searchList-context";
+import { CATEGORIES } from "../data/university";
 import PreviousButton from "../components/ui/PreviousButton";
 import SearchBar from "../components/ui/SearchBar";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Colors } from "../constants/styles";
 import { getRank } from "../services/axios";
 
@@ -53,18 +53,26 @@ const ItemImage = ({ school }) => {
 
 const deviceWidth = Dimensions.get("window").width;
 
-const HomeSearchScreen = ({ navigation }) => {
-	const searchListCtx = useContext(SearchListContext);
-
-  const [recentSearchesSchool, setRecentSearchesSchool] = useState(null);
+const HomeSearchScreen = ({ navigation, route }) => {
+	const { size } = route.params;
+	const [recentSearchesSchool, setRecentSearchesSchool] = useState(null);
 	const [rank, setRank] = useState([]);
-  const [text, setText] = useState("");
-	
-  const onSubmitEditing = () => {
-    navigation.navigate("SearchBoardScreen", { text : text });
-  }
+	const [text, setText] = useState("");
+	const [searchPressed, setSearchPressed] = useState(false);
 
-  useLayoutEffect(() => {
+	const onSubmitEditingHandler = (e) => {
+		const school = e.nativeEvent.text;
+		if (CATEGORIES.some((item) => item.school === school)) {
+			navigation.navigate("SchoolScreen", { school: school, width: 0.75 });
+		} else {
+			Alert.alert(
+				"검색 실패",
+				"정확한 대학교 이름을 입력해주세요.\n(예. 서울과학기술대학교)"
+			);
+		}
+	};
+
+	useLayoutEffect(() => {
 		const onPress = () => {
 			navigation.goBack();
 		};
@@ -72,21 +80,28 @@ const HomeSearchScreen = ({ navigation }) => {
 			headerTitle: "",
 			headerBackVisible: false,
 			headerLeft: () => <PreviousButton onPress={onPress} />,
-			headerRight: () => <SearchBar autoFocus={true} onUpdateValue={setText} onSubmitEditing={onSubmitEditing} />,
+			headerRight: () => (
+				<SearchBar
+					size={size}
+					autoFocus={true}
+					onUpdateValue={setText}
+					onSubmitEditingHandler={onSubmitEditingHandler}
+				/>
+			),
 		});
 	}, [navigation]);
 
 	useLayoutEffect(() => {
-		setRecentSearchesSchool(searchListCtx.recentSearchesSchool);
-	}, []);
+		setRecentSearchesSchool(recentSearchesSchool);
+	}, [navigation]);
 
 	useLayoutEffect(() => {
 		getRank().then((res) => {
 			let tmp = res.data.data;
-      tmp.sort((a, b) => {
-        return b.count - a.count;
-      });
-      setRank(tmp);
+			tmp.sort((a, b) => {
+				return b.count - a.count;
+			});
+			setRank(tmp);
 		});
 	}, []);
 
@@ -94,8 +109,10 @@ const HomeSearchScreen = ({ navigation }) => {
 		<ScrollView contentContainerStyle={styles.container}>
 			<View style={styles.recentContainer}>
 				<View style={styles.recentTitle}>
-					<Text style={styles.subTitle}>최근 검색 학교</Text>
-					<Text style={styles.subTitle}>전체 삭제</Text>
+					<View style={styles.subTitleContainer}>
+						<Text style={styles.subTitle}>최근 검색 학교</Text>
+						<Text style={styles.subTitle}>전체 삭제</Text>
+					</View>
 					{recentSearchesSchool?.map((recentSearch) => {
 						return (
 							<View style={styles.searchContainer}>
@@ -104,7 +121,12 @@ const HomeSearchScreen = ({ navigation }) => {
 									<Text style={styles.recentSearch}>{recentSearch}</Text>
 								</View>
 								<View>
-									<Text style={styles.icon}>X</Text>
+									<Text
+										style={styles.icon}
+										onPress={deleteHandler(recentSearch)}
+									>
+										X
+									</Text>
 								</View>
 							</View>
 						);
@@ -116,7 +138,7 @@ const HomeSearchScreen = ({ navigation }) => {
 					<Text style={styles.subTitle}>급상승 학교</Text>
 					{rank?.map((item) => {
 						return (
-							<View style={styles.searchContainer}>
+							<View style={styles.schoolContainer} key={item.name}>
 								<View style={styles.school}>
 									<ItemImage school={item.name} />
 									<View>
@@ -145,7 +167,8 @@ const styles = StyleSheet.create({
 		padding: 10,
 		borderRadius: 10,
 	},
-	recentTitle: {
+	recentTitle: {},
+	subTitleContainer: {
 		flexDirection: "row",
 		justifyContent: "space-between",
 	},
@@ -156,11 +179,17 @@ const styles = StyleSheet.create({
 	searchContainer: {
 		flexDirection: "row",
 		justifyContent: "space-between",
-    marginVertical: 10,
+		alignItems: "center",
+		marginVertical: 3,
+	},
+	schoolContainer: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		marginVertical: 10,
 	},
 	school: {
 		flexDirection: "row",
-    alignItems: "center",
+		alignItems: "center",
 	},
 	recentSearch: {
 		fontSize: 16,
@@ -170,8 +199,8 @@ const styles = StyleSheet.create({
 		color: Colors.font600,
 	},
 	image: {
-		width: deviceWidth * 0.15,
-		height: deviceWidth * 0.15,
+		width: deviceWidth * 0.12,
+		height: deviceWidth * 0.12,
 		marginRight: 15,
 	},
 	trendingContainer: {
