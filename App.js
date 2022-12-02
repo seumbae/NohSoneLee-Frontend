@@ -84,7 +84,6 @@ const HomeStack = () => {
 				<Stack.Screen name="BoardDetail" component={BoardDetailScreen} />
 				<Stack.Screen name="SchoolScreen" component={SchoolScreen} />
 				<Stack.Screen name="HomeSearchScreen" component={HomeSearchScreen} />
-				<Stack.Screen name="SearchBoardScreen" component={SearchBoardScreen} />
 			</Stack.Navigator>
 	);
 };

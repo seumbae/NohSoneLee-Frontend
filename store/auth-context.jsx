@@ -23,12 +23,6 @@ const AuthContextProvider = ({children}) => {
   const [authEmail, setAuthEmail] = useState();
   const [authSchool, setAuthSchool] = useState();
 
-  // const [nickname, setNickname] = useState();
-  // const [name, setName] = useState();
-  // const [phone, setPhone] = useState();
-  // const [email, setEmail] = useState();
-  // const [school, setSchool] = useState();
-
   useEffect(() => {
     const fetchToken = async () => {
       const storedToken = await AsyncStorage.getItem('token');

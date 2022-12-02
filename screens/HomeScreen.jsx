@@ -12,7 +12,7 @@ const HomeScreen = ({ navigation }) => {
 
 	useEffect(() => {
 		const onPressHandler = () => {
-			navigation.navigate("HomeSearchScreen");
+			navigation.navigate("HomeSearchScreen", {size: 0.75});
 		}
 		navigation.setOptions({
 			headerLeft: () => <Logo />,

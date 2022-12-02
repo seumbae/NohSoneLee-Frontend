@@ -6,8 +6,8 @@ import PreviousButton from "../components/ui/PreviousButton";
 import SearchBar from "../components/ui/SearchBar";
 
 const SchoolScreen = ({navigation, route}) => {
-	
-	const {school} = route.params;
+	const {school, width} = route.params;
+
 	const onPress = () => {
 		navigation.goBack();
 	};
@@ -17,11 +17,10 @@ const SchoolScreen = ({navigation, route}) => {
 			headerTitle: "",
 			headerBackVisible: false,
 			headerLeft: () => <PreviousButton onPress={onPress} />,
-			headerRight: () => <SearchBar school={school}/>,
+			headerRight: () => <SearchBar size={width} school={school} autoFocus={false}/>,
 		});
 	}, [navigation]);
 
-	
 
 	return (
 		<View style={styles.container}>
