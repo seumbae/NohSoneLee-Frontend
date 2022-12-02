@@ -8,7 +8,7 @@ import { useLayoutEffect } from "react";
 const deviceWidth = Dimensions.get("window").width;
 let src = "";
 let width = 0;
-const SearchBar = ({ value, onUpdateValue, school, autoFocus }) => {
+const SearchBar = ({ value, onUpdateValue, school, autoFocus, onSubmitEditing }) => {
 	switch (school) {
 		case "세종대학교":
 			src = require("../../assets/school/sejong.png");
@@ -59,6 +59,7 @@ const SearchBar = ({ value, onUpdateValue, school, autoFocus }) => {
 					onChangeText={onUpdateValue}
 					value={value}
 					autoFocus={autoFocus}
+					onSubmitEditing={onSubmitEditing}
 				/>
 			</View>
 			<View style={styles.icon}>

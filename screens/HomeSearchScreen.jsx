@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState,useContext } from "react";
 import {
 	View,
 	Text,
@@ -7,6 +7,7 @@ import {
 	Dimensions,
 	ScrollView,
 } from "react-native";
+import { SearchListContext } from "../store/searchList-context";
 import PreviousButton from "../components/ui/PreviousButton";
 import SearchBar from "../components/ui/SearchBar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -53,9 +54,17 @@ const ItemImage = ({ school }) => {
 const deviceWidth = Dimensions.get("window").width;
 
 const HomeSearchScreen = ({ navigation }) => {
-	const [recentSearchesSchool, setRecentSearchesSchool] = useState([]);
+	const searchListCtx = useContext(SearchListContext);
+
+  const [recentSearchesSchool, setRecentSearchesSchool] = useState(null);
 	const [rank, setRank] = useState([]);
-	useLayoutEffect(() => {
+  const [text, setText] = useState("");
+	
+  const onSubmitEditing = () => {
+    navigation.navigate("SearchBoardScreen", { text : text });
+  }
+
+  useLayoutEffect(() => {
 		const onPress = () => {
 			navigation.goBack();
 		};
@@ -63,33 +72,24 @@ const HomeSearchScreen = ({ navigation }) => {
 			headerTitle: "",
 			headerBackVisible: false,
 			headerLeft: () => <PreviousButton onPress={onPress} />,
-			headerRight: () => <SearchBar autoFocus={true} />,
+			headerRight: () => <SearchBar autoFocus={true} onUpdateValue={setText} onSubmitEditing={onSubmitEditing} />,
 		});
 	}, [navigation]);
+
 	useLayoutEffect(() => {
-		const getData = async () => {
-			setRecentSearchesSchool(
-				await AsyncStorage.getItem("recentSearchesSchool")
-			);
-		};
-		getData();
+		setRecentSearchesSchool(searchListCtx.recentSearchesSchool);
 	}, []);
 
 	useLayoutEffect(() => {
 		getRank().then((res) => {
-			setRank(res.data.data);
+			let tmp = res.data.data;
+      tmp.sort((a, b) => {
+        return b.count - a.count;
+      });
+      setRank(tmp);
 		});
 	}, []);
 
-	//급상승 순위 조회 school get
-	// {
-	//   "success": true,
-	//   "data": [
-	//       {
-	//           "name": "서울대학교",
-	//           "count": 3
-	//       }
-	//     }
 	return (
 		<ScrollView contentContainerStyle={styles.container}>
 			<View style={styles.recentContainer}>

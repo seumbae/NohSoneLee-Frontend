@@ -8,6 +8,7 @@ import { Colors } from "./constants/styles";
 import AppLoading from "expo-app-loading";
 
 import AuthContextProvider, { AuthContext } from "./store/auth-context";
+import SearchListContextProvider from "./store/searchList-context";
 import HomeScreen from "./screens/HomeScreen";
 import BoardDetailScreen from "./screens/BoardDetail";
 import AlertScreen from "./screens/AlertScreen";
@@ -17,6 +18,7 @@ import SchoolScreen from "./screens/SchoolScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SignupScreen from "./screens/SignupScreen";
 import WriteBoardScreen from "./screens/WriteBoardScreen";
+import SearchBoardScreen from "./screens/SearchBoardScreen";
 
 import { FontAwesome5 } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
@@ -60,30 +62,30 @@ const AuthStack = () => {
 					headerShown: false,
 				}}
 			/>
-
 		</Stack.Navigator>
 	);
 };
 
 const HomeStack = () => {
 	return (
-		<Stack.Navigator
-			screenOptions={{
-				headerStyle: { backgroundColor: Colors.default },
-				headerLeftContainerStyle: { paddingLeft: 15 },
-				headerRightContainerStyle: { paddingRight: 15 },
-				headerShadowVisible: false,
-			}}
-		>
-			<Stack.Screen
-				name="Home"
-				component={HomeScreen}
-				options={{ headerTitle: "" }}
-			/>
-			<Stack.Screen name="BoardDetail" component={BoardDetailScreen} />
-			<Stack.Screen name="SchoolScreen" component={SchoolScreen} />
-			<Stack.Screen name="HomeSearchScreen" component={HomeSearchScreen} />
-		</Stack.Navigator>
+			<Stack.Navigator
+				screenOptions={{
+					headerStyle: { backgroundColor: Colors.default },
+					headerLeftContainerStyle: { paddingLeft: 15 },
+					headerRightContainerStyle: { paddingRight: 15 },
+					headerShadowVisible: false,
+				}}
+			>
+				<Stack.Screen
+					name="Home"
+					component={HomeScreen}
+					options={{ headerTitle: "" }}
+				/>
+				<Stack.Screen name="BoardDetail" component={BoardDetailScreen} />
+				<Stack.Screen name="SchoolScreen" component={SchoolScreen} />
+				<Stack.Screen name="HomeSearchScreen" component={HomeSearchScreen} />
+				<Stack.Screen name="SearchBoardScreen" component={SearchBoardScreen} />
+			</Stack.Navigator>
 	);
 };
 
@@ -103,7 +105,11 @@ const FollowingStack = () => {
 				options={{ headerTitle: "" }}
 			/>
 			<Stack.Screen name="FollowingBoardDetail" component={BoardDetailScreen} />
-			<Stack.Screen name="FollowingSearchScreen" component={FollowingSearchScreen} />
+
+			<Stack.Screen
+				name="FollowingSearchScreen"
+				component={FollowingSearchScreen}
+			/>
 		</Stack.Navigator>
 	);
 };

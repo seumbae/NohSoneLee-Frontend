@@ -68,4 +68,7 @@ export const deleteLike = async (token, id) =>
 /* Refer Rank */
 export const getRank = async () => await API.get(`/school/ranked/list`);
 
+/* Search */
+export const searchBoard = async () => await API.get(`/board?searchWord=학`);
+
 export default API;
